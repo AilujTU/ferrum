@@ -109,3 +109,33 @@ li .remove {
 li .remove:hover {
   background: #e74c4c;
 }
+
+.schedule-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  background: #f0f2f5;
+  padding: 16px 20px;
+  border-radius: 14px;
+}
+
+.schedule-group h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #2c3e50;
+}
+
+.schedule-group label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #4f5b66;
+  align-items: center;
+}
+
+.schedule-group input[type="time"] {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}

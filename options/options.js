@@ -107,3 +107,26 @@ input.addEventListener("keypress", (e) => {
 
 // Init
 loadSites();
+
+const startInput = document.getElementById("startTime");
+const endInput = document.getElementById("endTime");
+const saveScheduleBtn = document.getElementById("saveScheduleBtn");
+
+// Load schedule
+function loadSchedule() {
+  chrome.storage.sync.get(["focusSchedule"], (result) => {
+    const schedule = result.focusSchedule || { start: "09:00", end: "17:00" };
+    startInput.value = schedule.start;
+    endInput.value = schedule.end;
+  });
+}
+
+// Save schedule
+saveScheduleBtn.addEventListener("click", () => {
+  const schedule = { start: startInput.value, end: endInput.value };
+  chrome.storage.sync.set({ focusSchedule: schedule });
+  alert("Schedule saved!");
+});
+
+// Initialize schedule
+loadSchedule();

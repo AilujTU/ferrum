@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>ferrum Settings</title>
-  <link rel="stylesheet" href="options.css">
-</head>
-<body>
-  <div class="container">
-    <h1>Blocked Websites</h1>
 
-    <div class="input-group">
-      <input id="siteInput" type="text" placeholder="e.g. reddit.com" />
-      <button id="addBtn">Add</button>
+<head>
+    <title>ferrum Settings</title>
+    <link rel="stylesheet" href="options.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Blocked Websites</h1>
+
+        <div class="input-group">
+            <input id="siteInput" type="text" placeholder="e.g. reddit.com" />
+            <button id="addBtn">Add</button>
+        </div>
+
+        <ul id="siteList"></ul>
+    </div>
+    <div class="schedule-group">
+        <h2>Focus Hours</h2>
+        <label>
+            Start:
+            <input type="time" id="startTime" />
+        </label>
+        <label>
+            End:
+            <input type="time" id="endTime" />
+        </label>
+        <button id="saveScheduleBtn">Save Schedule</button>
     </div>
 
-    <ul id="siteList"></ul>
-  </div>
-
-  <script src="options.js"></script>
+    <script src="options.js"></script>
 </body>
+
 </html>
