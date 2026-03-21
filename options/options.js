@@ -4,6 +4,28 @@ const list = document.getElementById("siteList");
 
 let sites = [];
 
+// Normalize input (important!)
+function normalizeSite(value) {
+  try {
+    // Add protocol if missing so URL() works
+    if (!value.startsWith("http://") && !value.startsWith("https://")) {
+      value = "https://" + value;
+    }
+
+    const url = new URL(value);
+    let hostname = url.hostname.toLowerCase();
+
+    // Remove "www."
+    if (hostname.startsWith("www.")) {
+      hostname = hostname.slice(4);
+    }
+
+    return hostname;
+  } catch {
+    return null;
+  }
+}
+
 // Load sites
 function loadSites() {
   chrome.storage.sync.get(["blockedSites"], (result) => {
@@ -24,11 +46,28 @@ function render() {
   sites.forEach((site, index) => {
     const li = document.createElement("li");
 
+    // Left side (favicon + text)
+    const left = document.createElement("div");
+    left.style.display = "flex";
+    left.style.alignItems = "center";
+    left.style.gap = "10px";
+
+    // Favicon
+    const img = document.createElement("img");
+    img.src = `https://www.google.com/s2/favicons?domain=${site}`;
+    img.width = 16;
+    img.height = 16;
+
+    // Site text
     const span = document.createElement("span");
     span.textContent = site;
 
+    left.appendChild(img);
+    left.appendChild(span);
+
+    // Remove button
     const removeBtn = document.createElement("button");
-    removeBtn.textContent = "remove";
+    removeBtn.textContent = "Remove";
     removeBtn.className = "remove";
 
     removeBtn.onclick = () => {
@@ -37,7 +76,7 @@ function render() {
       render();
     };
 
-    li.appendChild(span);
+    li.appendChild(left);
     li.appendChild(removeBtn);
     list.appendChild(li);
   });
@@ -45,17 +84,23 @@ function render() {
 
 // Add site
 addBtn.addEventListener("click", () => {
-  const value = input.value.trim();
+  const rawValue = input.value.trim();
+  const normalized = normalizeSite(rawValue);
 
-  if (value && !sites.includes(value)) {
-    sites.push(value);
+  if (!normalized) {
+    alert("Invalid website");
+    return;
+  }
+
+  if (!sites.includes(normalized)) {
+    sites.push(normalized);
     input.value = "";
     saveSites();
     render();
   }
 });
 
-// Optional: press Enter to add
+// Enter key support
 input.addEventListener("keypress", (e) => {
   if (e.key === "Enter") addBtn.click();
 });
