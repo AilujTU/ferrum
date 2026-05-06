@@ -158,6 +158,7 @@ function loadSchedule() {
 saveScheduleButton.addEventListener("click", () => {
   const schedule = { start: startInput.value, end: endInput.value };
   chrome.storage.sync.set({ focusSchedule: schedule });
+  chrome.storage.sync.set({weekendsEnabled: weekendsEnabled.checked});
   alert("Schedule saved!");
 });
 
