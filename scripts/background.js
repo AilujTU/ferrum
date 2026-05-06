@@ -89,7 +89,9 @@ function isWithinSchedule(callback) {
 function isNotEnabledAndWeekend(callback) {
   chrome.storage.sync.get(["weekendsEnabled"], (result) => {
     const day = new Date().getDay();
-    if (!result && (day == 0 || day == 6)) callback(true);
+    const isEnabled = result.weekendsEnabled || false;
+
+    if (!isEnabled && (day == 0 || day == 6)) callback(true);
     else callback(false);
   });
 }

@@ -147,7 +147,7 @@ function loadSchedule() {
     endInput.value = schedule.end;
   });
   chrome.storage.sync.get(["weekendsEnabled"], (result) => {
-    weekendsEnabled.checked = result || false;
+    weekendsEnabled.checked = result.weekendsEnabled || false;
   });
 }
 
