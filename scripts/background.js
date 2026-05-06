@@ -1,51 +1,24 @@
+
+/**
+ * Returns the blocked web sites from storage 
+ * and performs the specified callback function.
+ * @param callback function that is used on stored blocked sites
+ */
+
 function getBlockedSites(callback) {
   chrome.storage.sync.get(["blockedSites"], (result) => {
     callback(result.blockedSites || []);
   });
 }
 
-function isWithinSchedule(callback) {
-  chrome.storage.sync.get(["focusSchedule"], (result) => {
-    const schedule = result.focusSchedule || { start: "09:00", end: "17:00" };
-    const now = new Date();
-    const [startHour, startMin] = schedule.start.split(":").map(Number);
-    const [endHour, endMin] = schedule.end.split(":").map(Number);
 
-    const startTime = new Date();
-    startTime.setHours(startHour, startMin, 0, 0);
-
-    const endTime = new Date();
-    endTime.setHours(endHour, endMin, 0, 0);
-
-    // If endTime < startTime, assume schedule spans midnight
-    if (endTime < startTime) {
-      if (now >= startTime || now <= endTime) callback(true);
-      else callback(false);
-    } else {
-      callback(now >= startTime && now <= endTime);
-    }
-  });
-}
-
-function injectOverlay(tabId) {
-  chrome.scripting.executeScript({
-    target: { tabId },
-    func: () => {
-      if (document.getElementById("focus-block-overlay")) return;
-
-      const overlay = document.createElement("div");
-      overlay.id = "focus-block-overlay";
-
-      overlay.innerHTML = `
-        <div class="focus-box">
-          <h1>Nope, not right now.</h1>
-          <p>This site is blocked to help you stay productive.</p>
-          <button id="focus-close-btn">Okay.</button>
-        </div>
-      `;
-
-      const style = document.createElement("style");
-      style.textContent = `
+/**
+ * Simply return all styling elements for the blocked screen shown 
+ * if blocked website is accessed within schedule.
+ * @returns focus overlay style css
+ */
+function getFocusOverlayStyle() {
+  return `
         #focus-block-overlay {
           position: fixed;
           top:0; left:0; width:100%; height:100%;
@@ -75,6 +48,62 @@ function injectOverlay(tabId) {
         #focus-close-btn:hover { background: linear-gradient(135deg,#5a52e6,#8678ff); transform:translateY(-2px); }
         @keyframes fadeInOverlay { from{opacity:0;} to{opacity:1;} }
       `;
+}
+
+
+/**
+ * Checks if current time is within the blocked schedule.
+ * If yes, the callback function is called with true.
+ * If not, the callback function is called with false.
+ * The schedule is assumed to span over midnight, 
+ * if end time is samller than start time.
+ * @param callback decides wether or not to display focus overlay for given website
+ */
+function isWithinSchedule(callback) {
+  chrome.storage.sync.get(["focusSchedule"], (result) => {
+    const schedule = result.focusSchedule || { start: "09:00", end: "17:00" };
+    const now = new Date();
+    const [startHour, startMin] = schedule.start.split(":").map(Number);
+    const [endHour, endMin] = schedule.end.split(":").map(Number);
+
+    const startTime = new Date();
+    startTime.setHours(startHour, startMin, 0, 0);
+
+    const endTime = new Date();
+    endTime.setHours(endHour, endMin, 0, 0);
+
+    if (endTime < startTime) {
+      if (now >= startTime || now <= endTime) callback(true);
+      else callback(false);
+    } else {
+      callback(now >= startTime && now <= endTime);
+    }
+  });
+}
+
+/**
+ * Injects focus overlay if called, blocking the website from access.
+ * @param tabId defines the target of the script
+ */
+function injectOverlay(tabId) {
+  chrome.scripting.executeScript({
+    target: { tabId },
+    func: () => {
+      if (document.getElementById("focus-block-overlay")) return;
+
+      const overlay = document.createElement("div");
+      overlay.id = "focus-block-overlay";
+
+      overlay.innerHTML = `
+        <div class="focus-box">
+          <h1>Nope, not right now.</h1>
+          <p>This site is blocked to help you stay productive.</p>
+          <button id="focus-close-btn">Okay.</button>
+        </div>
+      `;
+
+      const style = document.createElement("style");
+      style.textContent = getFocusOverlayStyle();
 
       document.head.appendChild(style);
       document.body.appendChild(overlay);
@@ -87,6 +116,10 @@ function injectOverlay(tabId) {
   });
 }
 
+/**
+ * Checks on change in tab, if a blocked website is currently visited.
+ * If so, it further checks if it's within the blocked schedule and blocks accordingly.
+ */
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status !== "complete" || !tab.url) return;
 
@@ -102,6 +135,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   });
 });
 
+
+/**
+ * Simple runtime listener for closing the tab.
+ */
 chrome.runtime.onMessage.addListener((message, sender) => {
   if (message.action === "closeTab" && sender.tab?.id) {
     chrome.tabs.remove(sender.tab.id);
