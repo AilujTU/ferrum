@@ -23,7 +23,6 @@ h1 {
   color: #2c3e50;
 }
 
-/* Input area */
 .input-group {
   display: flex;
   gap: 12px;
@@ -41,15 +40,14 @@ input {
 }
 
 input:focus {
-  border-color: #6c63ff; /* soft purple focus */
+  border-color: #460743; 
 }
 
-/* Add button */
 button {
   padding: 12px 20px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(135deg, #6c63ff, #9b8fff);
+  background: linear-gradient(135deg, #62095e, #791974);
   color: #ffffff;
   font-size: 15px;
   cursor: pointer;
@@ -57,7 +55,7 @@ button {
 }
 
 button:hover {
-  background: linear-gradient(135deg, #5a52e6, #8678ff);
+  background: linear-gradient(135deg, #3f1142, #5b1660);
   transform: translateY(-2px);
 }
 
