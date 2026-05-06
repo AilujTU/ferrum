@@ -122,7 +122,7 @@ function injectOverlay(tabId) {
         #focus-block-overlay {
           position: fixed;
           top:0; left:0; width:100%; height:100%;
-          background: rgba(240,242,245,0.95);
+          background: #FFFF;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -132,21 +132,45 @@ function injectOverlay(tabId) {
           animation: fadeInOverlay 0.3s forwards;
         }
         .focus-box {
-          background:#fff; padding:36px 28px; border-radius:20px;
+          background: #F2EAE0; padding:36px 28px; border-radius:20px;
           max-width:400px; width:90%; min-height:180px;
           box-shadow:0 8px 24px rgba(0,0,0,0.12);
           display:flex; flex-direction:column;
           justify-content:center; align-items:center; gap:18px;
           text-align:center;
         }
-        .focus-box h1 { margin:0; font-size:22px; font-weight:600; color:#2c3e50; }
-        .focus-box p { margin:0; font-size:15px; color:#4f5b66; }
-        #focus-close-btn { padding:12px 26px; border:none; border-radius:12px;
-          background: linear-gradient(135deg,#6c63ff,#9b8fff); color:#fff; font-size:15px;
-          cursor:pointer; min-width:130px; transition: background 0.3s, transform 0.2s;
+        .focus-box h1 { 
+          margin:0; 
+          font-size:22px; 
+          font-weight:600; 
+          color:#2c3e50; 
         }
-        #focus-close-btn:hover { background: linear-gradient(135deg,#5a52e6,#8678ff); transform:translateY(-2px); }
-        @keyframes fadeInOverlay { from{opacity:0;} to{opacity:1;} }
+        .focus-box p { 
+          margin:0; 
+          font-size:15px; 
+          color:#4f5b66; 
+        }
+        #focus-close-btn { 
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding:12px 26px; 
+          border:none; 
+          border-radius:12px;
+          background: linear-gradient(135deg, #B4D3D9, #BDA6CE); 
+          color:#fff; 
+          font-size:15px;
+          cursor:pointer; 
+          min-width:130px; 
+          transition: background 0.3s, transform 0.2s;
+        }
+        #focus-close-btn:hover { 
+          background: linear-gradient(135deg, #BDA6CE, #9B8EC7); 
+          transform:translateY(-2px); 
+        }
+        @keyframes fadeInOverlay { 
+          from{opacity:0;} to{opacity:1;} 
+        }
       `;
 
       document.head.appendChild(style);

@@ -9,7 +9,7 @@ body {
 .container {
   max-width: 1000px;
   margin: auto;
-  background: #ffffff;
+  background: #F2EAE0;
   padding: 30px;
   border-radius: 20px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
@@ -40,14 +40,14 @@ input {
 }
 
 input:focus {
-  border-color: #460743; 
+  border-color: #9B8EC7; 
 }
 
 button {
   padding: 12px 20px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(135deg, #62095e, #791974);
+  background: linear-gradient(135deg, #B4D3D9, #BDA6CE);
   color: #ffffff;
   font-size: 15px;
   cursor: pointer;
@@ -55,7 +55,7 @@ button {
 }
 
 button:hover {
-  background: linear-gradient(135deg, #3f1142, #5b1660);
+  background: linear-gradient(135deg, #BDA6CE, #9B8EC7);
   transform: translateY(-2px);
 }
 
@@ -69,7 +69,7 @@ li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f0f2f5;
+  background: #ffffff;
   padding: 10px 14px;
   border-radius: 12px;
   margin-bottom: 10px;
@@ -77,7 +77,7 @@ li {
 }
 
 li:hover {
-  background: #e4e7eb;
+  background: #B4D3D9;
 }
 
 li .site-info {
@@ -93,7 +93,7 @@ li img {
 }
 
 li .remove {
-  background: #656565;
+  background: #BDA6CE;
   padding: 6px 12px;
   border-radius: 10px;
   font-size: 14px;
@@ -101,7 +101,7 @@ li .remove {
 }
 
 li .remove:hover {
-  background: #ae0909;
+  background: #9B8EC7;
 }
 
 .schedule-group {
@@ -111,21 +111,21 @@ li .remove:hover {
   flex-direction: column;
   gap: 12px;
   margin-bottom: 20px;
-  background: #f0f2f5;
+  background: #F2EAE0;
   padding: 16px 20px;
   border-radius: 14px;
 }
 
 .schedule-group h2 {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
   color: #2c3e50;
 }
 
 .schedule-group label {
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
+  font-size: 16px;
   color: #4f5b66;
   align-items: center;
 }
@@ -164,7 +164,7 @@ label input[type="checkbox"] {
 }
 
 label input[type="checkbox"]:checked+.toggle-switch {
-  background-color: #0b6008;
+  background-color: #9B8EC7;
 }
 
 label input[type="checkbox"]:checked+.toggle-switch::after {

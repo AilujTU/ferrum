@@ -153,13 +153,18 @@ function loadSchedule() {
 
 /**
  * Event listener for save schedule button.
- * Saves selected schedule to storage and gives user alert to confirm success.
+ * Saves selected schedule to storage and gives user visual feedback to confirm success.
  */
 saveScheduleButton.addEventListener("click", () => {
   const schedule = { start: startInput.value, end: endInput.value };
   chrome.storage.sync.set({ focusSchedule: schedule });
   chrome.storage.sync.set({weekendsEnabled: weekendsEnabled.checked});
-  alert("Schedule saved!");
+  
+  const tmp = saveScheduleButton.textContent;
+  saveScheduleButton.textContent ="Saved successfully!";
+  setTimeout(() => {
+    saveScheduleButton.textContent = tmp;
+  },3000);
 });
 
 // Initialize schedule
