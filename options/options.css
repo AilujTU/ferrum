@@ -1,10 +1,9 @@
-/* Global styles */
 body {
   font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  background: #f5f6f8; /* soft light gray */
+  background: #f5f6f8; 
   margin: 0;
   padding: 20px;
-  color: #2c3e50; /* muted dark text */
+  color: #2c3e50; 
 }
 
 .container {
@@ -62,7 +61,6 @@ button:hover {
   transform: translateY(-2px);
 }
 
-/* Blocked sites list */
 ul {
   list-style: none;
   padding: 0;
@@ -84,7 +82,6 @@ li:hover {
   background: #e4e7eb;
 }
 
-/* Left side: favicon + text */
 li .site-info {
   display: flex;
   align-items: center;
@@ -97,7 +94,6 @@ li img {
   border-radius: 4px;
 }
 
-/* Remove button */
 li .remove {
   background: #ff6b6b;
   padding: 6px 12px;

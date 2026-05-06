@@ -46,7 +46,6 @@ function injectOverlay(tabId) {
 
       const style = document.createElement("style");
       style.textContent = `
-        /* Overlay CSS (modern soft style) */
         #focus-block-overlay {
           position: fixed;
           top:0; left:0; width:100%; height:100%;
@@ -97,7 +96,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
     isWithinSchedule((shouldBlock) => {
       if (shouldBlock) {
-        injectOverlay(tabId);  // only inject if site is blocked AND within schedule
+        injectOverlay(tabId);  
       }
     });
   });
