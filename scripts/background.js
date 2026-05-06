@@ -80,6 +80,21 @@ function isWithinSchedule(callback) {
     }
   });
 }
+/**
+ * Checks first if the schedule is not enabled for weekends and then if it's the weekend.
+ * If yes, the callback function is called with true.
+ * If not, the callback function is called with false.
+ * @param callback decides the behaviour if schedule is enabled and it's the weekend
+ */
+function isNotEnabledAndWeekend(callback) {
+  chrome.storage.sync.get(["weekendsEnabled"], (result) => {
+    const day = new Date().getDay();
+    const isEnabled = result.weekendsEnabled || false;
+
+    if (!isEnabled && (day == 0 || day == 6)) callback(true);
+    else callback(false);
+  });
+}
 
 /**
  * Injects focus overlay if called, blocking the website from access.
@@ -103,11 +118,64 @@ function injectOverlay(tabId) {
       `;
 
       const style = document.createElement("style");
-      style.textContent = getFocusOverlayStyle();
+      style.textContent = `
+        #focus-block-overlay {
+          position: fixed;
+          top:0; left:0; width:100%; height:100%;
+          background: #FFFF;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 999999;
+          backdrop-filter: blur(8px);
+          font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+          animation: fadeInOverlay 0.3s forwards;
+        }
+        .focus-box {
+          background: #F2EAE0; padding:36px 28px; border-radius:20px;
+          max-width:400px; width:90%; min-height:180px;
+          box-shadow:0 8px 24px rgba(0,0,0,0.12);
+          display:flex; flex-direction:column;
+          justify-content:center; align-items:center; gap:18px;
+          text-align:center;
+        }
+        .focus-box h1 { 
+          margin:0; 
+          font-size:22px; 
+          font-weight:600; 
+          color:#2c3e50; 
+        }
+        .focus-box p { 
+          margin:0; 
+          font-size:15px; 
+          color:#4f5b66; 
+        }
+        #focus-close-btn { 
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding:12px 26px; 
+          border:none; 
+          border-radius:12px;
+          background: linear-gradient(135deg, #B4D3D9, #BDA6CE); 
+          color:#fff; 
+          font-size:15px;
+          cursor:pointer; 
+          min-width:130px; 
+          transition: background 0.3s, transform 0.2s;
+        }
+        #focus-close-btn:hover { 
+          background: linear-gradient(135deg, #BDA6CE, #9B8EC7); 
+          transform:translateY(-2px); 
+        }
+        @keyframes fadeInOverlay { 
+          from{opacity:0;} to{opacity:1;} 
+        }
+      `;
 
       document.head.appendChild(style);
       document.body.appendChild(overlay);
-      document.documentElement.style.overflow="hidden";
+      document.documentElement.style.overflow = "hidden";
 
       document.getElementById("focus-close-btn").onclick = () => {
         chrome.runtime.sendMessage({ action: "closeTab" });
@@ -128,9 +196,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (!blockedSites.some(site => url.hostname.includes(site))) return;
 
     isWithinSchedule((shouldBlock) => {
-      if (shouldBlock) {
-        injectOverlay(tabId);  
-      }
+      if (!shouldBlock) return;
+
+      isNotEnabledAndWeekend((notEnabledAndWeekend) => {
+        if (!notEnabledAndWeekend) injectOverlay(tabId);
+      });
     });
   });
 });
