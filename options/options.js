@@ -5,9 +5,9 @@ const list = document.getElementById("siteList");
 let sites = [];
 
 /**
- * Normalizes the website url given by the user to
- * @param {*} value 
- * @returns 
+ * Simplifies the website url given by the user.
+ * @param {*} value website url
+ * @returns normalized hostname if succesful, otherwise null
  */
 
 function normalizeSite(value) {
@@ -122,12 +122,22 @@ input.addEventListener("keypress", (e) => {
 loadSites();
 
 // Initalize vars with input of user
+const weekendsEnabled = document.getElementById("weekendsEnabled");
 const startInput = document.getElementById("startTime");
 const endInput = document.getElementById("endTime");
 const saveScheduleButton = document.getElementById("saveScheduleBtn");
 
 /**
- * Loads the schedule for when websites should be blocked from storage.
+ * Event listener for checkbox.
+ * Saves whether weekends are included or excluded from schedule to storage.
+ */
+weekendsEnabled.addEventListener("change", () => {
+  chrome.storage.sync.set({weekendsEnabled: weekendsEnabled.checked});
+});
+
+/**
+ * Loads the schedule for when websites should be blocked from storage,
+ * including decision of whether weekends are included.
  * Defaults to start 9am and end 5pm.
  */
 function loadSchedule() {
@@ -135,6 +145,9 @@ function loadSchedule() {
     const schedule = result.focusSchedule || { start: "09:00", end: "17:00" };
     startInput.value = schedule.start;
     endInput.value = schedule.end;
+  });
+  chrome.storage.sync.get(["weekendsEnabled"], (result) => {
+    weekendsEnabled.checked = result || false;
   });
 }
 

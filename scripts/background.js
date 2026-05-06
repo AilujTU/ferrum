@@ -80,6 +80,19 @@ function isWithinSchedule(callback) {
     }
   });
 }
+/**
+ * Checks first if the schedule is not enabled for weekends and then if it's the weekend.
+ * If yes, the callback function is called with true.
+ * If not, the callback function is called with false.
+ * @param callback decides the behaviour if schedule is enabled and it's the weekend
+ */
+function isNotEnabledAndWeekend(callback) {
+  chrome.storage.sync.get(["weekendsEnabled"], (result) => {
+    const day = new Date().getDay();
+    if (!result && (day == 0 || day == 6)) callback(true);
+    else callback(false);
+  });
+}
 
 /**
  * Injects focus overlay if called, blocking the website from access.
@@ -107,7 +120,7 @@ function injectOverlay(tabId) {
 
       document.head.appendChild(style);
       document.body.appendChild(overlay);
-      document.documentElement.style.overflow="hidden";
+      document.documentElement.style.overflow = "hidden";
 
       document.getElementById("focus-close-btn").onclick = () => {
         chrome.runtime.sendMessage({ action: "closeTab" });
@@ -128,9 +141,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (!blockedSites.some(site => url.hostname.includes(site))) return;
 
     isWithinSchedule((shouldBlock) => {
-      if (shouldBlock) {
-        injectOverlay(tabId);  
-      }
+      if (!shouldBlock) return;
+
+      isNotEnabledAndWeekend((notEnabledAndWeekend) => {
+        if (!notEnabledAndWeekend) injectOverlay(tabId);
+      });
     });
   });
 });

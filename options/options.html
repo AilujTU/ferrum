@@ -7,18 +7,13 @@
 </head>
 
 <body>
-    <div class="container">
-        <h1>Blocked Websites</h1>
-
-        <div class="input-group">
-            <input id="siteInput" type="text" placeholder="e.g. reddit.com" />
-            <button id="addBtn">Add</button>
-        </div>
-
-        <ul id="siteList"></ul>
-    </div>
     <div class="schedule-group">
         <h2>Focus Hours</h2>
+        <label>
+            Keep sites blocked on weekends:
+            <input type="checkbox" id="weekendsEnabled" />
+            <span class="toggle-switch"></span>
+        </label>
         <label>
             Start:
             <input type="time" id="startTime" />
@@ -29,6 +24,22 @@
         </label>
         <button id="saveScheduleBtn">Save Schedule</button>
     </div>
+    <div class="row">
+        <div class="column">
+            <div class="container">
+                <h1>Blocked Websites</h1>
+
+                <div class="input-group">
+                    <input id="siteInput" type="text" placeholder="e.g. reddit.com" />
+                    <button id="addBtn">Add</button>
+                </div>
+
+                <ul id="siteList"></ul>
+            </div>
+        </div>
+        <div class="column"></div>
+    </div>
+
 
     <script src="options.js"></script>
 </body>
