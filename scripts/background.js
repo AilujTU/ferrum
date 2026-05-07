@@ -5,9 +5,9 @@
  * @param callback function that is used on stored blocked sites
  */
 
-function getBlockedSites(callback) {
-  chrome.storage.sync.get(["blockedSites"], (result) => {
-    callback(result.blockedSites || []);
+function getCurrentBlockedSites(callback) {
+  chrome.storage.sync.get(["currentBlockedSites"], (result) => {
+    callback(result.currentBlockedSites || []);
   });
 }
 
@@ -191,9 +191,9 @@ function injectOverlay(tabId) {
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status !== "complete" || !tab.url) return;
 
-  getBlockedSites((blockedSites) => {
+  getCurrentBlockedSites((currentBlockedSites) => {
     const url = new URL(tab.url);
-    if (!blockedSites.some(site => url.hostname.includes(site))) return;
+    if (!currentBlockedSites.some(site => url.hostname.includes(site))) return;
 
     isWithinSchedule((shouldBlock) => {
       if (!shouldBlock) return;

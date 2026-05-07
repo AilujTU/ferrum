@@ -7,12 +7,17 @@ body {
 }
 
 .container {
-  max-width: 1000px;
-  margin: auto;
+  display: flex;
+  justify-content: center;
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
   background: #F2EAE0;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  padding: 16px 20px;
+  border-radius: 14px;
 }
 
 h1 {
@@ -26,7 +31,7 @@ h1 {
 .input-group {
   display: flex;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
 input {
@@ -92,7 +97,7 @@ li img {
   border-radius: 4px;
 }
 
-li .remove {
+li .remove, .add {
   background: #BDA6CE;
   padding: 6px 12px;
   border-radius: 10px;
@@ -100,7 +105,7 @@ li .remove {
   transition: background 0.2s;
 }
 
-li .remove:hover {
+li .remove:hover, .add:hover {
   background: #9B8EC7;
 }
 
@@ -108,6 +113,8 @@ li .remove:hover {
   display: flex;
   justify-content: center;
   max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
   flex-direction: column;
   gap: 12px;
   margin-bottom: 20px;
@@ -179,6 +186,12 @@ label input[type="checkbox"]:checked+.toggle-switch::after {
   opacity: 0.85;
 }
 
+.row{
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .column {
   float: left;
   width: 50%;
@@ -188,4 +201,10 @@ label input[type="checkbox"]:checked+.toggle-switch::after {
   content: "";
   display: table;
   clear: both;
+}
+
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+  }
 }

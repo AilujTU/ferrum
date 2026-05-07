@@ -1,12 +1,15 @@
 const input = document.getElementById("siteInput");
 const addButton = document.getElementById("addBtn");
-const list = document.getElementById("siteList");
+const currentList = document.getElementById("currentSiteList");
+const prevList = document.getElementById("prevSiteList");
 
-let sites = [];
+let currentSites = [];
+let prevSites = [];
+
 
 /**
  * Simplifies the website url given by the user.
- * @param {*} value website url
+ * @param value website url
  * @returns normalized hostname if succesful, otherwise null
  */
 
@@ -35,27 +38,32 @@ function normalizeSite(value) {
  * Loads blocked sites from storage, re-renders the blocked sites list.
  */
 function loadSites() {
-  chrome.storage.sync.get(["blockedSites"], (result) => {
-    sites = result.blockedSites || [];
+  chrome.storage.sync.get(["currentBlockedSites"], (result) => {
+    currentSites = result.currentBlockedSites || [];
+    render();
+  });
+  chrome.storage.sync.get(["prevBlockedSites"], (result) => {
+    prevSites = result.prevBlockedSites || [];
     render();
   });
 }
 
 /**
- * Saves blocked sites to storage.
+ * Saves blocked & previous sites to storage.
  */
 function saveSites() {
-  chrome.storage.sync.set({ blockedSites: sites });
+  chrome.storage.sync.set({currentBlockedSites: currentSites });
+  chrome.storage.sync.set({prevBlockedSites: prevSites});
 }
 
 /**
- * Renders list of blocked websites, 
+ * Renders list of blocked websites & previously selected websites, 
  * including the normalized web url, a remove button and the favicon of each web url, if possible.
  */
 function render() {
-  list.innerHTML = "";
+  currentList.innerHTML = "";
 
-  sites.forEach((site, index) => {
+  currentSites.forEach((site, index) => {
     const li = document.createElement("li");
 
     const left = document.createElement("div");
@@ -79,15 +87,59 @@ function render() {
     removeButton.className = "remove";
 
     removeButton.onclick = () => {
-      sites.splice(index, 1);
+      const removedSite = currentSites[index];
+
+      if (removedSite && !prevSites.includes(removedSite)) prevSites.push(removedSite);
+
+      currentSites.splice(index, 1);
       saveSites();
       render();
     };
 
     li.appendChild(left);
     li.appendChild(removeButton);
-    list.appendChild(li);
+    currentList.appendChild(li);
   });
+
+  prevList.innerHTML = "";
+
+  prevSites.forEach((site, index) => {
+    const li = document.createElement("li");
+
+    const left = document.createElement("div");
+    left.style.display = "flex";
+    left.style.alignItems = "center";
+    left.style.gap = "10px";
+
+    const img = document.createElement("img");
+    img.src = `https://www.google.com/s2/favicons?domain=${site}`;
+    img.width = 16;
+    img.height = 16;
+
+    const span = document.createElement("span");
+    span.textContent = site;
+
+    left.appendChild(img);
+    left.appendChild(span);
+
+    const addButton = document.createElement("button");
+    addButton.textContent = "Add";
+    addButton.className = "add";
+
+    addButton.onclick = () => {
+      const restoredSite = prevSites[index];
+
+      if (restoredSite && !currentSites.includes(restoredSite)) currentSites.push(restoredSite);
+      
+      prevSites.splice(index, 1);
+      saveSites();
+      render();
+    }
+
+    li.appendChild(left);
+    li.appendChild(addButton);
+    prevList.appendChild(li);
+  })
 }
 
 /**
@@ -103,8 +155,8 @@ addButton.addEventListener("click", () => {
     return;
   }
 
-  if (!sites.includes(normalized)) {
-    sites.push(normalized);
+  if (!currentSites.includes(normalized)) {
+    currentSites.push(normalized);
     input.value = "";
     saveSites();
     render();
@@ -126,13 +178,14 @@ const weekendsEnabled = document.getElementById("weekendsEnabled");
 const startInput = document.getElementById("startTime");
 const endInput = document.getElementById("endTime");
 const saveScheduleButton = document.getElementById("saveScheduleBtn");
+const clearPreviousButton = document.getElementById("clearPrevBtn");
 
 /**
  * Event listener for checkbox.
  * Saves whether weekends are included or excluded from schedule to storage.
  */
 weekendsEnabled.addEventListener("change", () => {
-  chrome.storage.sync.set({weekendsEnabled: weekendsEnabled.checked});
+  chrome.storage.sync.set({ weekendsEnabled: weekendsEnabled.checked });
 });
 
 /**
@@ -158,13 +211,27 @@ function loadSchedule() {
 saveScheduleButton.addEventListener("click", () => {
   const schedule = { start: startInput.value, end: endInput.value };
   chrome.storage.sync.set({ focusSchedule: schedule });
-  chrome.storage.sync.set({weekendsEnabled: weekendsEnabled.checked});
-  
+  chrome.storage.sync.set({ weekendsEnabled: weekendsEnabled.checked });
+
   const tmp = saveScheduleButton.textContent;
-  saveScheduleButton.textContent ="Saved successfully!";
+  saveScheduleButton.textContent = "Saved successfully!";
   setTimeout(() => {
     saveScheduleButton.textContent = tmp;
-  },3000);
+  }, 3000);
+});
+
+clearPreviousButton.addEventListener("click", () => {
+  const successMsg = prevSites.length == 0? "Nothing to clear!" : "Cleared successfully!";
+  prevSites = [];
+
+  saveSites();
+  render();
+
+  const tmp = clearPreviousButton.textContent;
+  clearPreviousButton.textContent = successMsg;
+  setTimeout(() => {
+    clearPreviousButton.textContent = tmp;
+  }, 3000);
 });
 
 // Initialize schedule
