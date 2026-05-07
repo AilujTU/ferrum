@@ -31,7 +31,7 @@ h1 {
 .input-group {
   display: flex;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
 input {

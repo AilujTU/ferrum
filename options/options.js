@@ -221,14 +221,14 @@ saveScheduleButton.addEventListener("click", () => {
 });
 
 clearPreviousButton.addEventListener("click", () => {
-  
+  const successMsg = prevSites.length == 0? "Nothing to clear!" : "Cleared successfully!";
   prevSites = [];
 
   saveSites();
   render();
 
   const tmp = clearPreviousButton.textContent;
-  clearPreviousButton.textContent = "Cleared successfully!";
+  clearPreviousButton.textContent = successMsg;
   setTimeout(() => {
     clearPreviousButton.textContent = tmp;
   }, 3000);
